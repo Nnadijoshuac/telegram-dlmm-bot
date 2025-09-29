@@ -21,7 +21,7 @@ A Telegram bot built with TypeScript that integrates with the Saros DLMM SDK to 
 
 1. **Clone the repository**
    ```bash
-   git clone <repository-url>
+   git clone https://github.com/Nnadijoshuac/telegram-dlmm-bot.git
    cd telegram-dlmm-bot
    ```
 
