@@ -1,8 +1,10 @@
 # Saros DLMM Telegram Bot
 
-> ⚡ Built for Hackathon – Demo-ready Telegram Bot for Saros DLMM
+> ⚡ A hackathon-grade DeFi Telegram bot for Saros DLMM.
 
 A Telegram bot that brings DeFi liquidity management to your fingertips. Set up alerts, monitor positions, and manage your Saros DLMM pools through simple, interactive conversations.
+  
+   Screenshot 2025-09-30 004624.png
 
 ## The Problem
 
