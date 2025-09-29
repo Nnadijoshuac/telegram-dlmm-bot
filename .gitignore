@@ -15,6 +15,9 @@ yarn-error.log*
 dist/
 build/
 
+# Persistent storage data
+data/
+
 # IDE files
 .vscode/
 .idea/

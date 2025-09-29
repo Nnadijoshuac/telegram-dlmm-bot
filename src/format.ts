@@ -1,5 +1,11 @@
 /**
- * Helper functions for formatting Telegram messages
+ * Message Formatting Utilities
+ * 
+ * Handles all Telegram message formatting including:
+ * - Command responses and menus
+ * - Error and success messages
+ * - Price alerts and notifications
+ * - Data display formatting
  */
 
 export interface LPPosition {

@@ -1,6 +1,8 @@
 /**
- * Telegram Bot for Saros DLMM DeFi Positions
- * Main entry point for the bot
+ * Saros DLMM Telegram Bot
+ * 
+ * A professional Telegram bot for managing DeFi liquidity positions.
+ * Features interactive menus, real-time price alerts, and persistent storage.
  */
 
 import { Bot, Context, InlineKeyboard } from 'grammy';
@@ -38,13 +40,12 @@ dotenv.config();
 // Initialize bot
 const bot = new Bot(process.env.TELEGRAM_BOT_TOKEN || '');
 
-// Global error handler for maximum stability
+// Global error handler - prevents bot crashes
 bot.catch((err) => {
   console.error('Bot error:', err);
-  // Don't let the bot crash - just log the error
 });
 
-// Background price checker for alerts
+// Background price monitoring for alerts
 let priceCheckerInterval: NodeJS.Timeout | null = null;
 
 const startPriceChecker = () => {
@@ -52,6 +53,7 @@ const startPriceChecker = () => {
     clearInterval(priceCheckerInterval);
   }
   
+  // Check prices every 5 minutes
   priceCheckerInterval = setInterval(async () => {
     try {
       const currentPrice = await getCurrentSOLPrice();
@@ -59,16 +61,16 @@ const startPriceChecker = () => {
       
       const userAlerts = await getAllUsersWithAlerts();
       
+      // Check each user's alert
       for (const [userId, targetPrice] of Object.entries(userAlerts)) {
         const userIdNum = parseInt(userId);
         const targetPriceNum = parseFloat(targetPrice.toString());
         
-        // Check if price crossed the target
+        // Send alert if price crossed target
         if (currentPrice >= targetPriceNum) {
           try {
             await bot.api.sendMessage(userIdNum, formatPriceAlert(currentPrice, targetPriceNum), { parse_mode: 'Markdown' });
-            // Remove alert after triggering
-            await removePriceAlert(userIdNum);
+            await removePriceAlert(userIdNum); // Remove after triggering
           } catch (error) {
             console.error(`Error sending alert to user ${userIdNum}:`, error);
           }
@@ -77,7 +79,7 @@ const startPriceChecker = () => {
     } catch (error) {
       console.error('Error in price checker:', error);
     }
-  }, 5 * 60 * 1000); // Check every 5 minutes
+  }, 5 * 60 * 1000);
 };
 
 const stopPriceChecker = () => {

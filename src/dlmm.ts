@@ -1,17 +1,22 @@
 /**
- * Saros DLMM SDK wrapper functions
- * Handles integration with @saros-finance/dlmm-sdk
+ * Saros DLMM SDK Integration
+ * 
+ * Handles all DeFi operations including:
+ * - Wallet and alert storage (persistent)
+ * - Live price data from CoinGecko
+ * - Pool analytics simulation
+ * - Background price monitoring
  */
 
 import { Connection, PublicKey } from '@solana/web3.js';
 import { LPPosition, PortfolioAnalytics } from './format';
 import storage from 'node-persist';
 
-// User wallet addresses storage (persistent)
+// Storage keys for persistent data
 const WALLET_STORAGE_KEY = 'user_wallets';
 const ALERTS_STORAGE_KEY = 'user_alerts';
 
-// Initialize persistent storage
+// Storage initialization flag
 let storageInitialized = false;
 
 const initializeStorage = async (): Promise<void> => {
