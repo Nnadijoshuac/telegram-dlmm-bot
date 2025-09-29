@@ -9,6 +9,7 @@ import storage from 'node-persist';
 
 // User wallet addresses storage (persistent)
 const WALLET_STORAGE_KEY = 'user_wallets';
+const ALERTS_STORAGE_KEY = 'user_alerts';
 
 // Initialize persistent storage
 let storageInitialized = false;
