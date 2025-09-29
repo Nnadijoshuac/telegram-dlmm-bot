@@ -3,7 +3,7 @@
  * Main entry point for the bot
  */
 
-import { Bot, Context } from 'grammy';
+import { Bot, Context, InlineKeyboard } from 'grammy';
 import dotenv from 'dotenv';
 import { 
   getLPPositions, 
@@ -12,7 +12,12 @@ import {
   setUserWallet,
   getUserWallet,
   isValidWalletAddress,
-  getConnectionStatus
+  getConnectionStatus,
+  setPriceAlert,
+  getUserPriceAlert,
+  removePriceAlert,
+  getAllUsersWithAlerts,
+  getCurrentSOLPrice
 } from './dlmm';
 import { 
   formatPositions, 
@@ -20,7 +25,11 @@ import {
   formatError, 
   formatSuccess, 
   formatHelp, 
-  formatWelcome 
+  formatWelcome,
+  formatAlertSet,
+  formatPriceAlert,
+  formatAlertsMenu,
+  formatAlertRemoved
 } from './format';
 
 // Load environment variables
@@ -34,6 +43,49 @@ bot.catch((err) => {
   console.error('Bot error:', err);
   // Don't let the bot crash - just log the error
 });
+
+// Background price checker for alerts
+let priceCheckerInterval: NodeJS.Timeout | null = null;
+
+const startPriceChecker = () => {
+  if (priceCheckerInterval) {
+    clearInterval(priceCheckerInterval);
+  }
+  
+  priceCheckerInterval = setInterval(async () => {
+    try {
+      const currentPrice = await getCurrentSOLPrice();
+      if (!currentPrice) return;
+      
+      const userAlerts = await getAllUsersWithAlerts();
+      
+      for (const [userId, targetPrice] of Object.entries(userAlerts)) {
+        const userIdNum = parseInt(userId);
+        const targetPriceNum = parseFloat(targetPrice.toString());
+        
+        // Check if price crossed the target
+        if (currentPrice >= targetPriceNum) {
+          try {
+            await bot.api.sendMessage(userIdNum, formatPriceAlert(currentPrice, targetPriceNum), { parse_mode: 'Markdown' });
+            // Remove alert after triggering
+            await removePriceAlert(userIdNum);
+          } catch (error) {
+            console.error(`Error sending alert to user ${userIdNum}:`, error);
+          }
+        }
+      }
+    } catch (error) {
+      console.error('Error in price checker:', error);
+    }
+  }, 5 * 60 * 1000); // Check every 5 minutes
+};
+
+const stopPriceChecker = () => {
+  if (priceCheckerInterval) {
+    clearInterval(priceCheckerInterval);
+    priceCheckerInterval = null;
+  }
+};
 
 // Additional error handling middleware
 bot.use(async (ctx, next) => {
