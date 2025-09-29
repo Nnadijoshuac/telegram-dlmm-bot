@@ -318,3 +318,88 @@ export const getConnectionStatus = async (): Promise<boolean> => {
     return false;
   }
 };
+
+/**
+ * Set price alert for user
+ */
+export const setPriceAlert = async (userId: number, price: number): Promise<void> => {
+  try {
+    await initializeStorage();
+    const alerts = await getUserAlerts();
+    alerts[userId] = price;
+    await storage.setItem(ALERTS_STORAGE_KEY, alerts);
+  } catch (error) {
+    console.error('Error setting price alert:', error);
+    throw new Error('Failed to set price alert');
+  }
+};
+
+/**
+ * Get price alert for user
+ */
+export const getUserPriceAlert = async (userId: number): Promise<number | null> => {
+  try {
+    await initializeStorage();
+    const alerts = await getUserAlerts();
+    return alerts[userId] || null;
+  } catch (error) {
+    console.error('Error getting price alert:', error);
+    return null;
+  }
+};
+
+/**
+ * Get all user alerts
+ */
+const getUserAlerts = async (): Promise<{ [key: number]: number }> => {
+  try {
+    await initializeStorage();
+    const alerts = await storage.getItem(ALERTS_STORAGE_KEY);
+    return alerts || {};
+  } catch (error) {
+    console.error('Error loading alerts from storage:', error);
+    return {};
+  }
+};
+
+/**
+ * Get all users with alerts
+ */
+export const getAllUsersWithAlerts = async (): Promise<{ [key: number]: number }> => {
+  try {
+    await initializeStorage();
+    return await getUserAlerts();
+  } catch (error) {
+    console.error('Error getting all user alerts:', error);
+    return {};
+  }
+};
+
+/**
+ * Remove price alert for user
+ */
+export const removePriceAlert = async (userId: number): Promise<void> => {
+  try {
+    await initializeStorage();
+    const alerts = await getUserAlerts();
+    delete alerts[userId];
+    await storage.setItem(ALERTS_STORAGE_KEY, alerts);
+  } catch (error) {
+    console.error('Error removing price alert:', error);
+    throw new Error('Failed to remove price alert');
+  }
+};
+
+/**
+ * Get current SOL price from CoinGecko
+ */
+export const getCurrentSOLPrice = async (): Promise<number | null> => {
+  try {
+    const response = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=solana&vs_currencies=usd');
+    const data = await response.json() as { solana?: { usd?: number } };
+    return data.solana?.usd || null;
+  } catch (error) {
+    console.error('Error fetching SOL price:', error);
+    return null;
+  }
+};

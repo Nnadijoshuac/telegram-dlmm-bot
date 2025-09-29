@@ -91,6 +91,55 @@ export const formatSuccess = (message: string): string => {
 };
 
 /**
+ * Format price alert confirmation message
+ */
+export const formatAlertSet = (price: number): string => {
+  return `✅ *Alert Set!*\n\nI'll notify you when SOL price crosses *$${price}* 🚀\n\nUse \`/alerts\` to manage your alerts.`;
+};
+
+/**
+ * Format price alert notification message
+ */
+export const formatPriceAlert = (currentPrice: number, targetPrice: number): string => {
+  const direction = currentPrice >= targetPrice ? '🚀' : '📉';
+  const change = currentPrice >= targetPrice ? 'reached' : 'dropped to';
+  
+  return `🚨 *Price Alert!*\n\nSOL has ${change} *$${currentPrice.toFixed(2)}* ${direction}\n\n*Target:* $${targetPrice}\n*Current:* $${currentPrice.toFixed(2)}`;
+};
+
+/**
+ * Format alerts menu message
+ */
+export const formatAlertsMenu = (currentAlert: number | null, currentPrice: number | null): string => {
+  let message = `🔔 *Price Alerts*\n\n`;
+  
+  if (currentAlert) {
+    message += `• **Current Alert:** $${currentAlert}\n`;
+    if (currentPrice) {
+      const difference = currentPrice - currentAlert;
+      const status = difference >= 0 ? '✅ Above target' : '⏳ Below target';
+      message += `• **Current Price:** $${currentPrice.toFixed(2)} (${status})\n`;
+    }
+    message += `\nUse \`/alert <new_price>\` to update or \`/alert off\` to remove.`;
+  } else {
+    message += `• **No alerts set**\n\n`;
+    if (currentPrice) {
+      message += `• **Current SOL Price:** $${currentPrice.toFixed(2)}\n`;
+    }
+    message += `\nUse \`/alert <price>\` to set a price alert.`;
+  }
+  
+  return message;
+};
+
+/**
+ * Format alert removed message
+ */
+export const formatAlertRemoved = (): string => {
+  return `✅ *Alert Removed*\n\nYour price alert has been removed. Use \`/alert <price>\` to set a new one.`;
+};
+
+/**
  * Format help message for Telegram display
  */
 export const formatHelp = (): string => {
