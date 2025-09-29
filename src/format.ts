@@ -79,23 +79,38 @@ export const formatSuccess = (message: string): string => {
  * Format help message for Telegram display
  */
 export const formatHelp = (): string => {
-  return `🤖 *Available Commands:*\n\n` +
-         `• /positions → View your LP positions\n` +
-         `• /analytics → Portfolio analytics\n` +
-         `• /rebalance → Rebalance your LP bins (demo)\n` +
-         `• /help → Show this menu\n\n` +
-         `*Note:* This is a demo bot. Add your wallet address to see real data!`;
+  return `🤖 *Saros Hackathon Bot - Command Center*\n\n` +
+         `🏊 *Pool Commands*\n` +
+         `• /positions → View your liquidity positions\n` +
+         `• /analytics → Check portfolio analytics and live data\n` +
+         `• /rebalance → Simulate pool rebalancing (demo mode)\n\n` +
+         `ℹ️ *Info Commands*\n` +
+         `• /status → Check bot status and connection\n` +
+         `• /help → Show this command center\n\n` +
+         `🔧 *Utility Commands*\n` +
+         `• /wallet → Set or view your Solana wallet address\n` +
+         `• /start → Show the onboarding dashboard\n\n` +
+         `🚀 *Powered by Saros DLMM | Hackathon Edition*`;
 };
 
 /**
  * Format welcome message for Telegram display
  */
 export const formatWelcome = (): string => {
-  return `👋 *Welcome to the Saros DLMM Bot!*\n\n` +
-         `Use /help to see available commands.\n\n` +
-         `*Features:*\n` +
-         `• View your liquidity positions\n` +
-         `• Track portfolio analytics\n` +
-         `• Simulate rebalancing (demo)\n\n` +
-         `*Note:* This is a demo version with mock data.`;
+  return `🎉 *Welcome to Saros Hackathon Bot!*\n\n` +
+         `Your gateway to advanced DeFi liquidity management on Solana! 🚀\n\n` +
+         `*📋 Onboarding Dashboard:*\n\n` +
+         `*Step 1: Connect Wallet* 🔗\n` +
+         `Set up your Solana wallet to start managing positions\n` +
+         `→ Use \`/wallet <your_address>\`\n\n` +
+         `*Step 2: Create Pool* 🏗️\n` +
+         `View and manage your liquidity positions\n` +
+         `→ Use \`/positions\` to see your pools\n\n` +
+         `*Step 3: Join Pool* 📈\n` +
+         `Monitor analytics and track performance\n` +
+         `→ Use \`/analytics\` for live data\n\n` +
+         `*Step 4: Learn More* 📚\n` +
+         `Explore all available commands and features\n` +
+         `→ Use \`/help\` for the command center\n\n` +
+         `*Ready to begin?* Let's start your DeFi journey! 🌟`;
 };

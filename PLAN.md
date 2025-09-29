@@ -11,6 +11,8 @@ A complete and **HACKATHON-READY** Telegram bot for managing Saros DLMM DeFi pos
 - **Persistent storage** with node-persist ✅
 - **Crash-proof error handling** ✅
 - **Real API integration** for live data ✅
+- **Enhanced user experience** with onboarding dashboard ✅
+- **Professional command center** with organized menu ✅
 - **Bot is LIVE and functional** ✅
 
 ## 📦 Packages Installed
@@ -52,29 +54,50 @@ telegram-dlmm-bot/
 ### `/start`
 **Output:**
 ```
-👋 Welcome to the Saros DLMM Bot!
+🎉 Welcome to Saros Hackathon Bot!
 
-Use /help to see available commands.
+Your gateway to advanced DeFi liquidity management on Solana! 🚀
 
-Features:
-• View your liquidity positions
-• Track portfolio analytics
-• Simulate rebalancing (demo)
+📋 Onboarding Dashboard:
 
-Note: This is a demo version with mock data.
+Step 1: Connect Wallet 🔗
+Set up your Solana wallet to start managing positions
+→ Use /wallet <your_address>
+
+Step 2: Create Pool 🏗️
+View and manage your liquidity positions
+→ Use /positions to see your pools
+
+Step 3: Join Pool 📈
+Monitor analytics and track performance
+→ Use /analytics for live data
+
+Step 4: Learn More 📚
+Explore all available commands and features
+→ Use /help for the command center
+
+Ready to begin? Let's start your DeFi journey! 🌟
 ```
 
 ### `/help`
 **Output:**
 ```
-🤖 Available Commands:
+🤖 Saros Hackathon Bot - Command Center
 
-• /positions → View your LP positions
-• /analytics → Portfolio analytics
-• /rebalance → Rebalance your LP bins (demo)
-• /help → Show this menu
+🏊 Pool Commands
+• /positions → View your liquidity positions
+• /analytics → Check portfolio analytics and live data
+• /rebalance → Simulate pool rebalancing (demo mode)
 
-Note: This is a demo bot. Add your wallet address to see real data!
+ℹ️ Info Commands
+• /status → Check bot status and connection
+• /help → Show this command center
+
+🔧 Utility Commands
+• /wallet → Set or view your Solana wallet address
+• /start → Show the onboarding dashboard
+
+🚀 Powered by Saros DLMM | Hackathon Edition
 ```
 
 ### `/positions`
@@ -145,14 +168,16 @@ Use /wallet to set your Solana address for real data.
 
 ### Working Features
 1. **All Commands Functional**: /start, /help, /positions, /analytics, /rebalance, /wallet, /status
-2. **Mock Data Display**: Shows realistic demo data for positions and analytics
-3. **Live Data Integration**: Real SOL price from CoinGecko API
-4. **Persistent Storage**: Wallet addresses survive bot restarts
-5. **Crash-Proof Design**: Comprehensive error handling prevents crashes
-6. **Wallet Management**: Users can set and view their wallet addresses
-7. **Error Handling**: Robust error handling and user feedback
-8. **Clean UI**: Emoji-rich messages with markdown formatting
-9. **Real-time Status**: Connection, wallet, and storage status checking
+2. **Enhanced User Experience**: Onboarding dashboard with step-by-step guidance
+3. **Professional Command Center**: Organized menu with logical command grouping
+4. **Mock Data Display**: Shows realistic demo data for positions and analytics
+5. **Live Data Integration**: Real SOL price from CoinGecko API
+6. **Persistent Storage**: Wallet addresses survive bot restarts
+7. **Crash-Proof Design**: Comprehensive error handling prevents crashes
+8. **Wallet Management**: Users can set and view their wallet addresses
+9. **Error Handling**: Robust error handling and user feedback
+10. **Clean UI**: Emoji-rich messages with markdown formatting
+11. **Real-time Status**: Connection, wallet, and storage status checking
 
 ## ⚠️ Current Limitations & TODOs
 
@@ -167,6 +192,7 @@ Use /wallet to set your Solana address for real data.
 1. **✅ Persistent Storage**: Wallet addresses now persist across restarts
 2. **✅ Real Data Integration**: Live SOL price from CoinGecko API
 3. **✅ Crash-Proof Design**: Comprehensive error handling implemented
+4. **✅ User Experience**: Professional onboarding dashboard and command center
 
 ### Implementation TODOs
 1. **Complete SDK Integration**:
@@ -195,6 +221,7 @@ Use /wallet to set your Solana address for real data.
 2. **✅ Error Handling**: Comprehensive error handling added
 3. **✅ Real Data Integration**: Live SOL price integration
 4. **✅ Crash Prevention**: Bot never crashes due to errors
+5. **✅ User Experience Enhancement**: Onboarding dashboard and command center
 
 ### Technical TODOs
 - [ ] Research Saros DLMM SDK API for real data fetching
@@ -207,6 +234,8 @@ Use /wallet to set your Solana address for real data.
 - [x] Implement proper error handling for SDK calls
 - [x] Create persistent storage system for user data
 - [x] Add comprehensive error handling middleware
+- [x] Enhance user interface with professional onboarding
+- [x] Organize command structure for better user experience
 
 ## 🚀 Getting Started
 
@@ -242,6 +271,7 @@ npm run dev
 - **Persistent storage**: Wallet addresses survive bot restarts
 - **Real data integration**: Live SOL price from CoinGecko API
 - **Crash-proof design**: Comprehensive error handling prevents crashes
+- **Professional UX**: Onboarding dashboard and organized command center
 
 ## 🔧 Next Steps
 
@@ -259,9 +289,10 @@ To enhance the bot further:
 - ✅ All commands working
 - ✅ Clean, production-ready code
 - ✅ Comprehensive error handling (crash-proof)
-- ✅ User-friendly interface
+- ✅ User-friendly interface with professional onboarding
 - ✅ Persistent storage (wallet addresses survive restarts)
 - ✅ Real data integration (live SOL price)
+- ✅ Organized command center with logical grouping
 - ✅ Ready for hackathon demos and production use
 
 **Users can now interact with @saros_dlmm_v1_bot on Telegram!**
@@ -282,5 +313,11 @@ To enhance the bot further:
 - Wallet addresses persist across bot restarts
 - File-based storage using node-persist
 - Simple and reliable data management
+
+### ✅ Professional User Experience
+- Onboarding dashboard with step-by-step guidance
+- Organized command center with logical grouping
+- Modern, emoji-rich interface design
+- Clear navigation and user-friendly messaging
 
 **Perfect for hackathon presentations and demos!** 🎯
