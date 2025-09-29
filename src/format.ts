@@ -144,10 +144,16 @@ export const formatAlertRemoved = (): string => {
  */
 export const formatHelp = (): string => {
   return `🤖 *Saros Hackathon Bot - Command Center*\n\n` +
+         `🎛️ *Main Menu*\n` +
+         `• /menu → Show interactive menu with buttons\n\n` +
          `🏊 *Pool Commands*\n` +
          `• /positions → View your liquidity positions\n` +
          `• /analytics → Check portfolio analytics and live data\n` +
          `• /rebalance → Simulate pool rebalancing (demo mode)\n\n` +
+         `🔔 *Alert Commands*\n` +
+         `• /alert <price> → Set SOL price alert\n` +
+         `• /alert off → Remove price alert\n` +
+         `• /alerts → View current alerts\n\n` +
          `ℹ️ *Info Commands*\n` +
          `• /status → Check bot status and connection\n` +
          `• /help → Show this command center\n\n` +

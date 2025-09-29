@@ -251,6 +251,200 @@ bot.command('status', async (ctx: Context) => {
   }
 });
 
+// Command: /menu - Show inline keyboard menu
+bot.command('menu', async (ctx: Context) => {
+  try {
+    if (!ctx.from) {
+      await ctx.reply(formatError('Unable to identify user.'));
+      return;
+    }
+
+    const keyboard = new InlineKeyboard()
+      .text('📊 Positions', 'menu_positions')
+      .text('📈 Analytics', 'menu_analytics').row()
+      .text('🔔 Alerts', 'menu_alerts')
+      .text('ℹ️ Status', 'menu_status').row()
+      .text('🔄 Refresh', 'menu_refresh');
+
+    await ctx.reply('🎛️ *Main Menu*\n\nChoose an option below:', { 
+      parse_mode: 'Markdown',
+      reply_markup: keyboard
+    });
+  } catch (error) {
+    console.error('Error in menu command:', error);
+    await ctx.reply(formatError('Failed to show menu. Please try again.'));
+  }
+});
+
+// Command: /alert - Set price alert
+bot.command('alert', async (ctx: Context) => {
+  try {
+    if (!ctx.from) {
+      await ctx.reply(formatError('Unable to identify user.'));
+      return;
+    }
+
+    const message = ctx.message?.text || '';
+    const args = message.replace('/alert', '').trim();
+
+    if (!args) {
+      // Show current alert status
+      const currentAlert = await getUserPriceAlert(ctx.from.id);
+      const currentPrice = await getCurrentSOLPrice();
+      const alertMessage = formatAlertsMenu(currentAlert, currentPrice);
+      await ctx.reply(alertMessage, { parse_mode: 'Markdown' });
+      return;
+    }
+
+    if (args.toLowerCase() === 'off') {
+      // Remove alert
+      await removePriceAlert(ctx.from.id);
+      await ctx.reply(formatAlertRemoved(), { parse_mode: 'Markdown' });
+      return;
+    }
+
+    const price = parseFloat(args);
+    if (isNaN(price) || price <= 0) {
+      await ctx.reply(formatError('Invalid price. Please enter a valid number (e.g., /alert 30)'));
+      return;
+    }
+
+    // Set alert
+    await setPriceAlert(ctx.from.id, price);
+    await ctx.reply(formatAlertSet(price), { parse_mode: 'Markdown' });
+  } catch (error) {
+    console.error('Error in alert command:', error);
+    await ctx.reply(formatError('Failed to set alert. Please try again.'));
+  }
+});
+
+// Command: /alerts - Show alerts menu (alias for /alert)
+bot.command('alerts', async (ctx: Context) => {
+  try {
+    if (!ctx.from) {
+      await ctx.reply(formatError('Unable to identify user.'));
+      return;
+    }
+
+    const currentAlert = await getUserPriceAlert(ctx.from.id);
+    const currentPrice = await getCurrentSOLPrice();
+    const alertMessage = formatAlertsMenu(currentAlert, currentPrice);
+    await ctx.reply(alertMessage, { parse_mode: 'Markdown' });
+  } catch (error) {
+    console.error('Error in alerts command:', error);
+    await ctx.reply(formatError('Failed to fetch alerts. Please try again.'));
+  }
+});
+
+// Inline button callbacks
+bot.callbackQuery('menu_positions', async (ctx: Context) => {
+  try {
+    if (!ctx.from) {
+      await ctx.answerCallbackQuery('Unable to identify user.');
+      return;
+    }
+
+    const positions = await getLPPositions(ctx.from.id);
+    const message = formatPositions(positions);
+    await ctx.editMessageText(message, { parse_mode: 'Markdown' });
+    await ctx.answerCallbackQuery('📊 Positions loaded');
+  } catch (error) {
+    console.error('Error in positions callback:', error);
+    await ctx.answerCallbackQuery('Failed to load positions');
+  }
+});
+
+bot.callbackQuery('menu_analytics', async (ctx: Context) => {
+  try {
+    if (!ctx.from) {
+      await ctx.answerCallbackQuery('Unable to identify user.');
+      return;
+    }
+
+    // Show loading message
+    await ctx.editMessageText('🔄 *Fetching live pool data...*', { parse_mode: 'Markdown' });
+    
+    try {
+      const analytics = await getPortfolioAnalytics(ctx.from.id);
+      const message = formatAnalytics(analytics);
+      await ctx.editMessageText(message, { parse_mode: 'Markdown' });
+      await ctx.answerCallbackQuery('📈 Analytics loaded');
+    } catch (analyticsError) {
+      console.error('Error fetching analytics:', analyticsError);
+      await ctx.editMessageText('❌ *Failed to load analytics*\n\nPlease try again later.', { parse_mode: 'Markdown' });
+      await ctx.answerCallbackQuery('Failed to load analytics');
+    }
+  } catch (error) {
+    console.error('Error in analytics callback:', error);
+    await ctx.answerCallbackQuery('Failed to load analytics');
+  }
+});
+
+bot.callbackQuery('menu_alerts', async (ctx: Context) => {
+  try {
+    if (!ctx.from) {
+      await ctx.answerCallbackQuery('Unable to identify user.');
+      return;
+    }
+
+    const currentAlert = await getUserPriceAlert(ctx.from.id);
+    const currentPrice = await getCurrentSOLPrice();
+    const alertMessage = formatAlertsMenu(currentAlert, currentPrice);
+    await ctx.editMessageText(alertMessage, { parse_mode: 'Markdown' });
+    await ctx.answerCallbackQuery('🔔 Alerts loaded');
+  } catch (error) {
+    console.error('Error in alerts callback:', error);
+    await ctx.answerCallbackQuery('Failed to load alerts');
+  }
+});
+
+bot.callbackQuery('menu_status', async (ctx: Context) => {
+  try {
+    if (!ctx.from) {
+      await ctx.answerCallbackQuery('Unable to identify user.');
+      return;
+    }
+
+    const connectionStatus = await getConnectionStatus();
+    const walletAddress = await getUserWallet(ctx.from.id);
+    const currentAlert = await getUserPriceAlert(ctx.from.id);
+    
+    let statusMessage = '🔍 *Bot Status:*\n\n';
+    statusMessage += `• **Connection:** ${connectionStatus ? '✅ Connected' : '❌ Disconnected'}\n`;
+    statusMessage += `• **Wallet:** ${walletAddress ? `✅ Set (${walletAddress.slice(0, 8)}...)` : '❌ Not set'}\n`;
+    statusMessage += `• **Alert:** ${currentAlert ? `✅ Set ($${currentAlert})` : '❌ Not set'}\n`;
+    statusMessage += `• **Storage:** ✅ Persistent (node-persist)\n`;
+    statusMessage += `• **Mode:** Demo (Mock data + Live SOL price)\n\n`;
+    statusMessage += `Use /wallet to set your Solana address for real data.`;
+    
+    await ctx.editMessageText(statusMessage, { parse_mode: 'Markdown' });
+    await ctx.answerCallbackQuery('ℹ️ Status loaded');
+  } catch (error) {
+    console.error('Error in status callback:', error);
+    await ctx.answerCallbackQuery('Failed to load status');
+  }
+});
+
+bot.callbackQuery('menu_refresh', async (ctx: Context) => {
+  try {
+    const keyboard = new InlineKeyboard()
+      .text('📊 Positions', 'menu_positions')
+      .text('📈 Analytics', 'menu_analytics').row()
+      .text('🔔 Alerts', 'menu_alerts')
+      .text('ℹ️ Status', 'menu_status').row()
+      .text('🔄 Refresh', 'menu_refresh');
+
+    await ctx.editMessageText('🎛️ *Main Menu*\n\nChoose an option below:', { 
+      parse_mode: 'Markdown',
+      reply_markup: keyboard
+    });
+    await ctx.answerCallbackQuery('🔄 Menu refreshed');
+  } catch (error) {
+    console.error('Error in refresh callback:', error);
+    await ctx.answerCallbackQuery('Failed to refresh menu');
+  }
+});
+
 // Handle unknown commands
 bot.on('message', async (ctx: Context) => {
   try {
@@ -282,6 +476,10 @@ const startBot = async () => {
     await bot.start();
     console.log('✅ Bot started successfully!');
     console.log('📱 Bot is ready to receive messages...');
+    
+    // Start background price checker
+    startPriceChecker();
+    console.log('🔔 Price alert checker started (5-minute intervals)');
   } catch (error) {
     console.error('❌ Failed to start bot:', error);
     process.exit(1);
@@ -291,6 +489,7 @@ const startBot = async () => {
 // Handle graceful shutdown
 process.on('SIGINT', async () => {
   console.log('\n🛑 Shutting down bot...');
+  stopPriceChecker();
   await bot.stop();
   console.log('✅ Bot stopped successfully');
   process.exit(0);
@@ -298,6 +497,7 @@ process.on('SIGINT', async () => {
 
 process.on('SIGTERM', async () => {
   console.log('\n🛑 Shutting down bot...');
+  stopPriceChecker();
   await bot.stop();
   console.log('✅ Bot stopped successfully');
   process.exit(0);
