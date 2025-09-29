@@ -11,14 +11,16 @@
   "author": "You",
   "license": "MIT",
   "dependencies": {
-    "grammy": "^1.38.2",
+    "@saros-finance/dlmm-sdk": "^1.4.0",
     "dotenv": "^16.0.0",
-    "@saros-finance/dlmm-sdk": "^1.4.0"
+    "grammy": "^1.38.2",
+    "node-persist": "^4.0.4"
   },
   "devDependencies": {
-    "typescript": "^5.0.0",
-    "ts-node": "^10.0.0",
+    "@types/node": "^18.0.0",
+    "@types/node-persist": "^3.1.8",
     "nodemon": "^2.0.0",
-    "@types/node": "^18.0.0"
+    "ts-node": "^10.0.0",
+    "typescript": "^5.0.0"
   }
 }

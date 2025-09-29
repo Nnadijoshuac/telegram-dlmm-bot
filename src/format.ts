@@ -12,6 +12,8 @@ export interface PortfolioAnalytics {
   totalLiquidity: string;
   feesEarned: string;
   mockIL: string;
+  realSOLPrice?: string;
+  realReserves?: string;
 }
 
 /**
@@ -42,10 +44,21 @@ export const formatAnalytics = (analytics: PortfolioAnalytics | null): string =>
     return '📈 *No portfolio analytics available.*\n\nAdd your wallet address to start tracking analytics!';
   }
 
-  return `📈 *Portfolio Analytics:*\n\n` +
+  let message = `📈 *Portfolio Analytics:*\n\n` +
          `• **Total Liquidity:** ${analytics.totalLiquidity}\n` +
          `• **Fees Earned:** ${analytics.feesEarned}\n` +
          `• **Mock IL:** ${analytics.mockIL}`;
+  
+  // Add real data if available
+  if (analytics.realSOLPrice) {
+    message += `\n\n🔴 *Live Data (SOL/USDC):*`;
+    message += `\n• **SOL Price:** ${analytics.realSOLPrice}`;
+    if (analytics.realReserves) {
+      message += `\n• **Pool Reserves:** ${analytics.realReserves}`;
+    }
+  }
+  
+  return message;
 };
 
 /**

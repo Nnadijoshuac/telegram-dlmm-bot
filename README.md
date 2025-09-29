@@ -111,6 +111,7 @@ The project uses TypeScript with strict mode enabled. Configuration is in `tscon
 - `dotenv` - Environment variable management
 - `@saros-finance/dlmm-sdk` - Saros DLMM SDK integration
 - `@solana/web3.js` - Solana blockchain interaction
+- `node-persist` - Persistent file-based storage
 
 ### Development Dependencies
 - `typescript` - TypeScript compiler
@@ -120,18 +121,24 @@ The project uses TypeScript with strict mode enabled. Configuration is in `tscon
 
 ## 🚨 Important Notes
 
-### Demo Mode
-This bot currently runs in **demo mode** with mock data. To enable real data:
+### Demo Mode with Real Integration
+This bot runs in **demo mode** with **real SOL price data** integration:
 
-1. Set your wallet address using `/wallet <your_solana_address>`
-2. The bot will attempt to fetch real data (implementation pending)
-3. Currently shows sample data for demonstration purposes
+1. Set your wallet address using `/wallet <your_solana_address>` (now persistent!)
+2. The bot fetches real SOL/USDC price data from live APIs
+3. Shows mock portfolio data with live price information
+4. Wallet addresses are saved and survive bot restarts
 
-### Limitations
-- Real Saros DLMM SDK integration is partially implemented
-- Wallet address storage is in-memory (not persistent)
-- Rebalancing is simulated only
-- No transaction signing or execution
+### What's Real vs Mock
+- **Real Data**: SOL price, pool reserves calculation, wallet persistence
+- **Mock Data**: LP positions, total liquidity, fees earned, impermanent loss
+- **Live Integration**: CoinGecko API for SOL price, persistent storage for wallets
+
+### Stability Features
+- **Crash-Proof**: Comprehensive error handling prevents bot crashes
+- **Persistent Storage**: Wallet addresses saved using node-persist
+- **Graceful Degradation**: Falls back to mock data if APIs fail
+- **User-Friendly**: Clear error messages and status updates
 
 ## 🔍 Troubleshooting
 

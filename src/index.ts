@@ -29,9 +29,24 @@ dotenv.config();
 // Initialize bot
 const bot = new Bot(process.env.TELEGRAM_BOT_TOKEN || '');
 
-// Middleware for error handling
+// Global error handler for maximum stability
 bot.catch((err) => {
   console.error('Bot error:', err);
+  // Don't let the bot crash - just log the error
+});
+
+// Additional error handling middleware
+bot.use(async (ctx, next) => {
+  try {
+    await next();
+  } catch (error) {
+    console.error('Middleware error:', error);
+    try {
+      await ctx.reply(formatError('An unexpected error occurred. Please try again.'));
+    } catch (replyError) {
+      console.error('Error sending error message:', replyError);
+    }
+  }
 });
 
 // Command: /start
@@ -118,7 +133,7 @@ bot.command('wallet', async (ctx: Context) => {
     const walletAddress = message.replace('/wallet', '').trim();
 
     if (!walletAddress) {
-      const currentWallet = getUserWallet(ctx.from.id);
+      const currentWallet = await getUserWallet(ctx.from.id);
       const statusMessage = currentWallet 
         ? `📝 *Current wallet:* \`${currentWallet}\`\n\nTo update, send: /wallet <new_address>`
         : '📝 *No wallet set.*\n\nTo set your wallet, send: /wallet <your_solana_address>';
@@ -132,7 +147,7 @@ bot.command('wallet', async (ctx: Context) => {
       return;
     }
 
-    setUserWallet(ctx.from.id, walletAddress);
+    await setUserWallet(ctx.from.id, walletAddress);
     await ctx.reply(formatSuccess(`Wallet address set to: \`${walletAddress}\``), { parse_mode: 'Markdown' });
   } catch (error) {
     console.error('Error in wallet command:', error);
@@ -144,7 +159,7 @@ bot.command('wallet', async (ctx: Context) => {
 bot.command('status', async (ctx: Context) => {
   try {
     const connectionStatus = await getConnectionStatus();
-    const walletAddress = ctx.from ? getUserWallet(ctx.from.id) : null;
+    const walletAddress = ctx.from ? await getUserWallet(ctx.from.id) : null;
     
     let statusMessage = '🔍 *Bot Status:*\n\n';
     statusMessage += `• **Connection:** ${connectionStatus ? '✅ Connected' : '❌ Disconnected'}\n`;
