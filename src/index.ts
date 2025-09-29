@@ -104,7 +104,9 @@ bot.command('analytics', async (ctx: Context) => {
       const message = formatAnalytics(analytics);
       
       // Edit the loading message with the results
-      await ctx.api.editMessageText(ctx.chat.id, loadingMessage.message_id, message, { parse_mode: 'Markdown' });
+      if (ctx.chat) {
+        await ctx.api.editMessageText(ctx.chat.id, loadingMessage.message_id, message, { parse_mode: 'Markdown' });
+      }
     } catch (analyticsError) {
       console.error('Error fetching analytics:', analyticsError);
       
@@ -118,7 +120,9 @@ bot.command('analytics', async (ctx: Context) => {
       };
       
       const fallbackMessage = formatAnalytics(fallbackAnalytics);
-      await ctx.api.editMessageText(ctx.chat.id, loadingMessage.message_id, fallbackMessage, { parse_mode: 'Markdown' });
+      if (ctx.chat) {
+        await ctx.api.editMessageText(ctx.chat.id, loadingMessage.message_id, fallbackMessage, { parse_mode: 'Markdown' });
+      }
     }
   } catch (error) {
     console.error('Error in analytics command:', error);
