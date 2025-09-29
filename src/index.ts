@@ -96,9 +96,30 @@ bot.command('analytics', async (ctx: Context) => {
       return;
     }
 
-    const analytics = await getPortfolioAnalytics(ctx.from.id);
-    const message = formatAnalytics(analytics);
-    await ctx.reply(message, { parse_mode: 'Markdown' });
+    // Show loading message for real-time data
+    const loadingMessage = await ctx.reply('🔄 *Fetching live pool data...*', { parse_mode: 'Markdown' });
+    
+    try {
+      const analytics = await getPortfolioAnalytics(ctx.from.id);
+      const message = formatAnalytics(analytics);
+      
+      // Edit the loading message with the results
+      await ctx.api.editMessageText(ctx.chat.id, loadingMessage.message_id, message, { parse_mode: 'Markdown' });
+    } catch (analyticsError) {
+      console.error('Error fetching analytics:', analyticsError);
+      
+      // Fallback to mock data if real data fails
+      const fallbackAnalytics = {
+        totalLiquidity: '$200',
+        feesEarned: '$12.50',
+        mockIL: '-2.1%',
+        realSOLPrice: 'Data unavailable',
+        dataSource: 'Error'
+      };
+      
+      const fallbackMessage = formatAnalytics(fallbackAnalytics);
+      await ctx.api.editMessageText(ctx.chat.id, loadingMessage.message_id, fallbackMessage, { parse_mode: 'Markdown' });
+    }
   } catch (error) {
     console.error('Error in analytics command:', error);
     await ctx.reply(formatError('Failed to fetch analytics. Please try again.'));

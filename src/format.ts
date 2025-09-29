@@ -14,6 +14,9 @@ export interface PortfolioAnalytics {
   mockIL: string;
   realSOLPrice?: string;
   realReserves?: string;
+  realTVL?: string;
+  realFeeGrowth?: string;
+  dataSource?: string;
 }
 
 /**
@@ -49,12 +52,24 @@ export const formatAnalytics = (analytics: PortfolioAnalytics | null): string =>
          `• **Fees Earned:** ${analytics.feesEarned}\n` +
          `• **Mock IL:** ${analytics.mockIL}`;
   
-  // Add real data if available
+  // Add real pool data if available
   if (analytics.realSOLPrice) {
-    message += `\n\n🔴 *Live Data (SOL/USDC):*`;
+    const dataSource = analytics.dataSource === 'SDK' ? '🔴' : '🟡';
+    const sourceText = analytics.dataSource === 'SDK' ? 'Live Pool Data (SDK)' : 'Live Pool Data (Fallback)';
+    
+    message += `\n\n${dataSource} *${sourceText} (SOL/USDC):*`;
     message += `\n• **SOL Price:** ${analytics.realSOLPrice}`;
+    
     if (analytics.realReserves) {
       message += `\n• **Pool Reserves:** ${analytics.realReserves}`;
+    }
+    
+    if (analytics.realTVL) {
+      message += `\n• **Total Value Locked:** ${analytics.realTVL}`;
+    }
+    
+    if (analytics.realFeeGrowth) {
+      message += `\n• **Fee Growth:** ${analytics.realFeeGrowth}`;
     }
   }
   
