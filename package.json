@@ -17,6 +17,7 @@
     "dotenv": "^16.0.0",
     "grammy": "^1.38.2",
     "node-persist": "^4.0.4",
+    "ioredis": "^5.3.2",
     "@types/node": "^18.0.0",
     "@types/node-persist": "^3.1.8"
   },
