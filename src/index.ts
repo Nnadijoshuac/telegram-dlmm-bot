@@ -46,7 +46,7 @@ bot.catch((err) => {
 });
 
 // Background price monitoring for alerts
-let priceCheckerInterval: NodeJS.Timeout | null = null;
+let priceCheckerInterval: ReturnType<typeof setInterval> | null = null;
 
 const startPriceChecker = () => {
   if (priceCheckerInterval) {
