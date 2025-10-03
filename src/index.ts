@@ -41,7 +41,7 @@ dotenv.config();
 const bot = new Bot(process.env.TELEGRAM_BOT_TOKEN || '');
 
 // Global error handler - prevents bot crashes
-bot.catch((err) => {
+bot.catch((err: unknown) => {
   console.error('Bot error:', err);
 });
 
@@ -90,7 +90,7 @@ const stopPriceChecker = () => {
 };
 
 // Additional error handling middleware
-bot.use(async (ctx, next) => {
+bot.use(async (ctx: Context, next: () => Promise<void>) => {
   try {
     await next();
   } catch (error) {
